@@ -56,10 +56,24 @@ def done_todo(index_str):
     else:
         print(f"ไม่พบงานหมายเลข: {index_str}")
 
+def del_todo(index_str):
+    try:
+        index = int(index_str) - 1
+    except ValueError:
+        print("กรุณาระบุหมายเลขงานเป็นตัวเลข")
+        return
+    todos = load_todos()
+    if 0 <= index < len(todos):
+        removed_todo = todos.pop(index)
+        save_todos(todos)
+        print(f"ลบงานแล้ว: {removed_todo['title']}")
+    else:
+        print(f"ไม่พบงานหมายเลข: {index_str}")
+
 
 def main():
     if len(sys.argv) < 2:
-        print('วิธีใช้: python todo.py add "ชื่องาน" | list | done <หมายเลข>')
+        print('วิธีใช้: python todo.py add "ชื่องาน" | list | done <หมายเลข> | del <หมายเลข>')
         return
 
     command = sys.argv[1]
@@ -70,6 +84,8 @@ def main():
         list_todos()
     elif command == "done" and len(sys.argv) >= 3:
         done_todo(sys.argv[2])
+    elif command == "del" and len(sys.argv) >= 3:
+        del_todo(sys.argv[2])
     else:
         print("คำสั่งไม่ถูกต้อง")
 
