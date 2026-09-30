@@ -5,3 +5,4 @@
 python todo.py add "ชื่องาน"
 python todo.py list
 python todo.py done <หมายเลข>
+python todo.py del <หมายเลข>
