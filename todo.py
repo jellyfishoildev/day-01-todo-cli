@@ -2,6 +2,13 @@ import json
 import sys
 from pathlib import Path
 
+# รองรับการแสดงผลภาษาไทยบน Windows Terminal
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
+
 DATA_FILE = Path("todos.json")
 
 
@@ -34,9 +41,25 @@ def list_todos():
         print(f"{i}. [{mark}] {todo['title']}")
 
 
+def done_todo(index_str):
+    try:
+        index = int(index_str) - 1
+    except ValueError:
+        print("กรุณาระบุหมายเลขงานเป็นตัวเลข")
+        return
+
+    todos = load_todos()
+    if 0 <= index < len(todos):
+        todos[index]["done"] = True
+        save_todos(todos)
+        print(f"ทำเครื่องหมายเสร็จแล้ว: {todos[index]['title']}")
+    else:
+        print(f"ไม่พบงานหมายเลข: {index_str}")
+
+
 def main():
     if len(sys.argv) < 2:
-        print('วิธีใช้: python todo.py add "ชื่องาน" | list')
+        print('วิธีใช้: python todo.py add "ชื่องาน" | list | done <หมายเลข>')
         return
 
     command = sys.argv[1]
@@ -45,6 +68,8 @@ def main():
         add_todo(sys.argv[2])
     elif command == "list":
         list_todos()
+    elif command == "done" and len(sys.argv) >= 3:
+        done_todo(sys.argv[2])
     else:
         print("คำสั่งไม่ถูกต้อง")
 
